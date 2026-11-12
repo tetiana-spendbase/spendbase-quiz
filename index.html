@@ -56,11 +56,26 @@ body[data-bg="white"]{background-image:radial-gradient(circle,#EDEDEA 1px,transp
 .hl .bar::before,.hl .bar::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#175CD3;}
 .hl .bar::before{top:-3px;}.hl .bar::after{bottom:-3px;}
 .hl .bar.l{left:-4px;}.hl .bar.r{right:-4px;}
+#intro{display:flex;flex-direction:column;min-height:440px;position:relative;z-index:1;padding-top:1.4rem;}
+.badge{width:44px;height:44px;border:1.5px solid var(--t);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:700;font-size:14px;margin-bottom:1.4rem;background:#fff;}
+#intro h1{font-family:Inter,sans-serif;font-weight:800;font-size:32px;letter-spacing:-0.02em;line-height:1.18;margin-bottom:1.2rem;}
+.introSub{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:var(--tm);}
+.introSpacer{flex:1;min-height:2rem;}
+.cta{display:flex;align-items:center;justify-content:space-between;background:var(--t);color:#fff;border:none;border-radius:14px;padding:14px 20px;font-family:Inter,sans-serif;font-weight:600;font-size:14px;cursor:pointer;width:100%;}
+.cta .time{font-family:'JetBrains Mono',monospace;font-size:11px;color:#aeb4bd;}
 </style></head><body>
 <div class="w">
-<img id="illuBg" class="illu-bg" src="assets/cover-illustration.png" alt=""/>
-<div class="hdr"><div class="logo"><span class="dot"></span>Spendbase</div><span class="si" id="ct">1 / 14</span></div>
-<div class="pb"><div class="pf" id="pg" style="width:7%"></div></div>
+<img id="illuBg" class="illu-bg" src="assets/cover-illustration.png" alt="" style="display:block"/>
+<div id="intro">
+  <div class="brand" style="display:flex;align-items:center;gap:6px;color:#175CD3;font:700 13px Inter,sans-serif;margin-bottom:1.6rem;"><span class="dot"></span>Spendbase</div>
+  <div class="badge">Q</div>
+  <h1>Знайди свій <span class="hl"><span class="box"></span><span class="bar l"></span>профіль<span class="bar r"></span></span><br>у команді</h1>
+  <p class="introSub">14 коротких питань.<br>Жодної правильної відповіді.</p>
+  <div class="introSpacer"></div>
+  <button class="cta" onclick="startQuiz()"><span>Поїхали →</span><span class="time">~2 хв</span></button>
+</div>
+<div class="hdr" style="display:none"><div class="logo"><span class="dot"></span>Spendbase</div><span class="si" id="ct">1 / 14</span></div>
+<div class="pb" style="display:none"><div class="pf" id="pg" style="width:7%"></div></div>
 <div id="bd"></div>
 </div>
 <script>
@@ -71,13 +86,14 @@ function gP(a){var s={builder:0,ai_enthusiast:0,connector:0,creative:0};function
 var cur=0,ans={},co={nm:"",tg:""};
 function hl(w){return "<span class=\"hl\"><span class=\"box\"></span><span class=\"bar l\"></span>"+w+"<span class=\"bar r\"></span></span>";}
 function hlLast(text){var i=text.lastIndexOf(" ");if(i<0)return hl(text);return text.slice(0,i+1)+hl(text.slice(i+1));}
-function render(){var q=Q[cur];document.body.setAttribute("data-bg",q.type=="contact"?"tint":"white");document.getElementById("illuBg").style.display=q.type=="contact"?"block":"none";document.getElementById("pg").style.width=((cur+1)/Q.length*100)+"%";document.getElementById("ct").textContent=(cur+1)+" / "+Q.length;var h="";if(q.type=="contact"){h="<span class=\"bb\">"+q.block+"</span><h2 class=\"qt\">"+hlLast(q.q)+"</h2><p class=\"qs\">"+q.sub+"</p>";h+=q.fields.map(function(f){return "<input class=\"inp\" id=\""+f.id+"\" placeholder=\""+f.ph+"\" autocomplete=\"off\"/>";}).join("");h+="<div class=\"row\"><span></span><button class=\"btn p\" onclick=\"next()\">Поїхали</button></div>";}else{var cc=q.cols==2?"opts two":"opts";h="<span class=\"bb\">"+q.block+"</span><h2 class=\"qt\">"+hlLast(q.q)+"</h2><p class=\"qs\">"+q.sub+"</p><div class=\""+cc+"\">"; h+=q.opts.map(function(o){var sel=ans[q.id]==o.v?" sel":"";return "<div class=\"opt"+sel+"\" data-qid=\""+q.id+"\" data-v=\""+o.v+"\" onclick=\"pick(this)\"><span class=\"oi\">"+o.i+"</span><div><div class=\"ot\">"+o.t+"</div><div class=\"od\">"+o.d+"</div></div></div>";}).join("");h+="</div><div class=\"row\"><button class=\"btn\" onclick=\"back()\" "+(cur==0?"disabled ":"")+">Назад</button><button class=\"btn p\" id=\"nb\" onclick=\"next()\" "+(ans[q.id]?"":"disabled ")+">Далі</button></div>";}document.getElementById("bd").innerHTML="<div class=\"si2\">"+h+"</div>";if(q.type=="contact"){var nm=document.getElementById("nm"),tg=document.getElementById("tg");nm.value=co.nm;tg.value=co.tg;nm.onchange=function(e){co.nm=e.target.value;};tg.onchange=function(e){co.tg=e.target.value;};nm.oninput=function(e){co.nm=e.target.value;};tg.oninput=function(e){co.tg=e.target.value;};}}
+function render(){var q=Q[cur];document.body.setAttribute("data-bg",q.type=="contact"?"tint":"white");document.getElementById("pg").style.width=((cur+1)/Q.length*100)+"%";document.getElementById("ct").textContent=(cur+1)+" / "+Q.length;var h="";if(q.type=="contact"){h="<span class=\"bb\">"+q.block+"</span><h2 class=\"qt\">"+hlLast(q.q)+"</h2><p class=\"qs\">"+q.sub+"</p>";h+=q.fields.map(function(f){return "<input class=\"inp\" id=\""+f.id+"\" placeholder=\""+f.ph+"\" autocomplete=\"off\"/>";}).join("");h+="<div class=\"row\"><span></span><button class=\"btn p\" onclick=\"next()\">Поїхали</button></div>";}else{var cc=q.cols==2?"opts two":"opts";h="<span class=\"bb\">"+q.block+"</span><h2 class=\"qt\">"+hlLast(q.q)+"</h2><p class=\"qs\">"+q.sub+"</p><div class=\""+cc+"\">"; h+=q.opts.map(function(o){var sel=ans[q.id]==o.v?" sel":"";return "<div class=\"opt"+sel+"\" data-qid=\""+q.id+"\" data-v=\""+o.v+"\" onclick=\"pick(this)\"><span class=\"oi\">"+o.i+"</span><div><div class=\"ot\">"+o.t+"</div><div class=\"od\">"+o.d+"</div></div></div>";}).join("");h+="</div><div class=\"row\"><button class=\"btn\" onclick=\"back()\" "+(cur==0?"disabled ":"")+">Назад</button><button class=\"btn p\" id=\"nb\" onclick=\"next()\" "+(ans[q.id]?"":"disabled ")+">Далі</button></div>";}document.getElementById("bd").innerHTML="<div class=\"si2\">"+h+"</div>";if(q.type=="contact"){var nm=document.getElementById("nm"),tg=document.getElementById("tg");nm.value=co.nm;tg.value=co.tg;nm.onchange=function(e){co.nm=e.target.value;};tg.onchange=function(e){co.tg=e.target.value;};nm.oninput=function(e){co.nm=e.target.value;};tg.oninput=function(e){co.tg=e.target.value;};}}
 function pick(el){var qid=el.dataset.qid,val=el.dataset.v;ans[qid]=val;var opts=document.querySelectorAll(".opt");for(var i=0;i<opts.length;i++){opts[i].classList.remove("sel");}el.classList.add("sel");var nb=document.getElementById("nb");if(nb){nb.disabled=false;}setTimeout(function(){next();},280);}
 function next(){if(Q[cur].type=="contact"){co.nm=document.getElementById("nm").value||"";co.tg=document.getElementById("tg").value||"";}if(cur<Q.length-1){cur++;render();}else{showResult();}}
 function back(){if(cur>0){cur--;render();}}
 function save(p){fetch(U,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)}).then(function(){var el=document.getElementById("ss");if(el){el.textContent="Збережено";el.className="ss ok";}}).catch(function(){});}
 function showResult(){document.body.setAttribute("data-bg","tint");document.getElementById("illuBg").style.display="none";document.getElementById("pg").style.width="100%";document.getElementById("ct").textContent="Done";var p=gP(ans);var name=co.nm?co.nm.split(" ")[0]:"друже";var sm={now:"Готовий стартувати вже зараз.",soon:"Стартуєш за 1-3 місяці.",later:"Плануєш після диплому.",explore:"Поки дивишся."};var rParts=p.r.split(" — ");var rTitle=rParts.length>1?hl(rParts[0])+" — "+rParts[1]:hlLast(p.r);var r="<div class=\"res si2\"><div class=\"ri rv\">"+p.i+"</div><p class=\"re rv\">Твій профіль у Spendbase</p><div class=\"rr rv\">"+rTitle+"</div><p class=\"rd rv\">"+p.d+"</p><div class=\"tags rv\">";p.t.forEach(function(t){r+="<span class=\"tag\">"+t+"</span>";});r+="</div><div class=\"chip rv\"><strong>"+name+"</strong>, твій профіль збережено.<br>"+(sm[ans.start]||"")+"<br><br>"+(co.tg?"Напишемо на <span class=\"cl\">"+co.tg+"</span> і підберемо роль.":"Залиш контакт на стенді")+"</div><div id=\"ss\" class=\"ss rv\">Зберігаємо...</div><button class=\"rb rv\" onclick=\"restart()\">Пройти ще раз</button></div>";document.getElementById("bd").innerHTML=r;save({name:co.nm,contact:co.tg,profile:p.r,start:ans.start,groupchat:ans.groupchat,drive:ans.drive,superpower:ans.superpower});}
-function restart(){cur=0;ans={};co={nm:"",tg:""};render();}
-render();
+function restart(){cur=0;ans={};co={nm:"",tg:""};document.getElementById("intro").style.display="flex";document.getElementById("illuBg").style.display="block";document.querySelector(".hdr").style.display="none";document.querySelector(".pb").style.display="none";document.body.setAttribute("data-bg","tint");document.getElementById("bd").innerHTML="";}
+function startQuiz(){document.getElementById("intro").style.display="none";document.getElementById("illuBg").style.display="none";document.querySelector(".hdr").style.display="flex";document.querySelector(".pb").style.display="block";render();}
+document.body.setAttribute("data-bg","tint");
 </script>
 </body></html>
